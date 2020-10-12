@@ -13,7 +13,9 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 
-class CalculateScoresStep(val repository: InMemoryPersistence, val calculateScores: UseCase<CalculateScoresParams, Nothing>) : AcceptanceConfiguration() {
+class CalculateScoresStep(
+        private val repository: InMemoryPersistence,
+        private val calculateScores: UseCase<CalculateScoresParams, Nothing>) : AcceptanceConfiguration() {
 
     @Given("the following adds")
     fun theFollowingAdds(data: DataTable) {
@@ -23,16 +25,6 @@ class CalculateScoresStep(val repository: InMemoryPersistence, val calculateScor
                 }.forEach {
                     repository.ads.add(it)
                 }
-    }
-
-    private fun getDescription(it: MutableList<String>) = it[2]?.toString()
-
-    private fun getPictures(it: MutableList<String>): List<Int> {
-        return if (it[3] != null) {
-            listOf(it[3].toInt())
-        } else {
-            listOf()
-        }
     }
 
     @When("the scores are calculated")
@@ -46,6 +38,16 @@ class CalculateScoresStep(val repository: InMemoryPersistence, val calculateScor
                 .forEach {
                     assertThat(getAd(it[0])).isNotNull().transform { AdVO::score }.isNotNull().isEqualTo(it[1].toInt())
                 }
+    }
+
+    private fun getDescription(notMappedAdd: MutableList<String>) = notMappedAdd[2]?.toString()
+
+    private fun getPictures(notMappedAdd: MutableList<String>): List<Int> {
+        return if (notMappedAdd[3] != null) {
+            listOf(notMappedAdd[3].toInt())
+        } else {
+            listOf()
+        }
     }
 
     private fun getAd(it: String) {
