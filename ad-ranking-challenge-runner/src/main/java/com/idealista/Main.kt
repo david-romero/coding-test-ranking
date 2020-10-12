@@ -1,4 +1,4 @@
-package com.idealista.runner
+package com.idealista
 
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
