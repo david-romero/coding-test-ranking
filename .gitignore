@@ -5,3 +5,15 @@ target/
 
 .project
 .classpath
+
+Thumbs.db
+.DS_Store
+.gradle
+build/
+out/
+.idea
+*.iml
+*.ipr
+*.iws
+.settings
+.factorypath
