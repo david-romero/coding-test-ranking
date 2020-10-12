@@ -9,9 +9,7 @@ import com.idealista.usecases.shared.Validation
 
 class CalculateScores(private val adRepository: AdRepository) : UseCase<CalculateScoresParams, Any> {
     override fun execute(params: CalculateScoresParams): Either<Validation, Any> {
-        val list = adRepository.findAll()
-                .map(this::calculateScore)
-        adRepository.saveAll(list)
+        adRepository.saveAll(adRepository.findAll().map(this::calculateScore))
         return Either.Right(Any())
     }
 
