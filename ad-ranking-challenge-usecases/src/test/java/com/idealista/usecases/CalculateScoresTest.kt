@@ -9,16 +9,20 @@ import com.idealista.domain.AdIdentifier
 import com.idealista.domain.Typology
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.stubs.AdRepositoryStub
+import com.idealista.usecases.stubs.IntBasedPictureIdentifier
+import com.idealista.usecases.stubs.PictureRepositoryStub
 import org.junit.jupiter.api.Test
 
 internal class CalculateScoresTest {
 
     private val adRepository = AdRepositoryStub()
 
-    private val calculateScores = CalculateScores(adRepository)
+    private val pictureRepository = PictureRepositoryStub()
+
+    private val calculateScores = CalculateScores(adRepository, pictureRepository)
 
     @Test
-    fun `given an existing ad without pictures when the score is calculated then the -10 is set as score`() {
+    fun `given an existing ad without pictures when the score is calculated then -10 is set as score`() {
         // given
         adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "Este piso es una ganga, compra, compra, COMPRA!!!!!", emptyList(), 300, null, null))
 
@@ -28,6 +32,32 @@ internal class CalculateScoresTest {
         // then
         assertThat(adRepository.findAll()).hasSize(1)
         assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(-10)
+    }
+
+    @Test
+    fun `given an existing ad with a high resolution picture when the score is calculated then 20 is set as score`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "Este piso es una ganga, compra, compra, COMPRA!!!!!", listOf(IntBasedPictureIdentifier(4)), 300, null, null))
+
+        // when
+        calculateScores.execute(CalculateScoresParams())
+
+        // then
+        assertThat(adRepository.findAll()).hasSize(1)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(20)
+    }
+
+    @Test
+    fun `given an existing ad with a standard resolution picture when the score is calculated then 10 is set as score`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "Este piso es una ganga, compra, compra, COMPRA!!!!!", listOf(IntBasedPictureIdentifier(1)), 300, null, null))
+
+        // when
+        calculateScores.execute(CalculateScoresParams())
+
+        // then
+        assertThat(adRepository.findAll()).hasSize(1)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(10)
     }
 }
 
