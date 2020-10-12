@@ -12,7 +12,7 @@ class InMemoryPersistence {
         ads = ArrayList()
         ads.add(AdVO(1, "CHALET", "Este piso es una ganga, compra, compra, COMPRA!!!!!", emptyList(), 300, null, null, null))
         ads.add(AdVO(2, "FLAT", "Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo", listOf(4), 300, null, null, null))
-        ads.add(AdVO(3, "CHALET", "", Arrays.asList(2), 300, null, null, null))
+        ads.add(AdVO(3, "CHALET", "", listOf(2), 300, null, null, null))
         ads.add(AdVO(4, "FLAT", "Ático céntrico muy luminoso y recién reformado, parece nuevo", listOf(5), 300, null, null, null))
         ads.add(AdVO(5, "FLAT", "Pisazo,", listOf(3, 8), 300, null, null, null))
         ads.add(AdVO(6, "GARAGE", "", listOf(6), 300, null, null, null))
