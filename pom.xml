@@ -22,6 +22,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <kotlin.version>1.4.10</kotlin.version>
+    <cucumber.version>6.1.1</cucumber.version>
   </properties>
 
   <modules>
