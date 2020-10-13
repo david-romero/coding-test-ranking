@@ -8,6 +8,7 @@ import com.idealista.domain.Ad
 import com.idealista.domain.AdIdentifier
 import com.idealista.domain.Typology
 import com.idealista.domain.rules.DescriptionIsNotBlankRule
+import com.idealista.domain.rules.DescriptionSizeRule
 import com.idealista.domain.rules.NoPicturesScoreRule
 import com.idealista.domain.rules.QualityPictureRule
 import com.idealista.usecases.score.params.CalculateScoresParams
@@ -22,7 +23,7 @@ internal class CalculateScoresTest {
 
     private val pictureRepository = PictureRepositoryStub()
 
-    private val calculateScores = CalculateScores(adRepository, listOf(NoPicturesScoreRule(), QualityPictureRule(pictureRepository), DescriptionIsNotBlankRule()))
+    private val calculateScores = CalculateScores(adRepository, listOf(NoPicturesScoreRule(), QualityPictureRule(pictureRepository), DescriptionIsNotBlankRule(), DescriptionSizeRule()))
 
     @Test
     fun `given an existing ad without pictures when the score is calculated then -10 is set as score`() {
@@ -74,6 +75,19 @@ internal class CalculateScoresTest {
         // then
         assertThat(adRepository.findAll()).hasSize(1)
         assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(15)
+    }
+
+    @Test
+    fun `given an existing ad with a sixty words description of a Chalet when the score is calculated then 20 is added to the score`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "This is a description with ten words eight nine ten ".repeat(6), listOf(IntBasedPictureIdentifier(1)), 300, null, null))
+
+        // when
+        calculateScores.execute(CalculateScoresParams())
+
+        // then
+        assertThat(adRepository.findAll()).hasSize(1)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(35)
     }
 }
 
