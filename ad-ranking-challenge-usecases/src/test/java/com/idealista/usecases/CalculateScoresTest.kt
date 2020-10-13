@@ -7,6 +7,8 @@ import assertk.assertions.isEqualTo
 import com.idealista.domain.Ad
 import com.idealista.domain.AdIdentifier
 import com.idealista.domain.Typology
+import com.idealista.domain.rules.NoPicturesScoreRule
+import com.idealista.domain.rules.QualityPictureRule
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.stubs.AdRepositoryStub
 import com.idealista.usecases.stubs.IntBasedPictureIdentifier
@@ -19,7 +21,7 @@ internal class CalculateScoresTest {
 
     private val pictureRepository = PictureRepositoryStub()
 
-    private val calculateScores = CalculateScores(adRepository, pictureRepository)
+    private val calculateScores = CalculateScores(adRepository, listOf(NoPicturesScoreRule(), QualityPictureRule(pictureRepository)))
 
     @Test
     fun `given an existing ad without pictures when the score is calculated then -10 is set as score`() {

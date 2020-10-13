@@ -1,6 +1,7 @@
 package com.idealista
 
 
+import com.idealista.infrastructure.di.BeansInitializer
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -8,5 +9,9 @@ import org.springframework.boot.runApplication
 class Main
 
 fun main(args: Array<String>) {
-    runApplication<Main>(*args)
+    runApplication<Main>(*args) {
+        addInitializers(
+                BeansInitializer()
+        )
+    }
 }

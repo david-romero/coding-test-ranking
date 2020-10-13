@@ -1,10 +1,11 @@
 package com.idealista.infrastructure.persistence
 
+import com.idealista.domain.*
 import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class InMemoryPersistence {
+class InMemoryPersistence : AdRepository, PictureRepository {
     final val ads: MutableList<AdVO>
     final val pictures: MutableList<PictureVO>
 
@@ -28,4 +29,27 @@ class InMemoryPersistence {
         pictures.add(PictureVO(7, "http://www.idealista.com/pictures/7", "SD"))
         pictures.add(PictureVO(8, "http://www.idealista.com/pictures/8", "HD"))
     } //TODO crea los métodos que necesites
+
+    override fun findAll(): List<Ad> {
+        return ads.map {
+            Ad(StringBasedAdIdentifier(it.id.toString()), Typology.valueOf(it.typology ?: ""), it.description
+                    ?: "", it.pictures?.map { id -> IntBasedPictureIdentifier(id) }?.toList() ?: listOf(), it.houseSize
+                    ?: 0, it.gardenSize, it.irrelevantSince)
+        }.toList()
+    }
+
+    override fun saveAll(ads: List<Ad>): List<Ad> {
+        TODO("Not yet implemented")
+    }
+
+    override fun findByIdentifier(identifier: PictureIdentifier): Picture? {
+        return pictures.find {
+            it.id == identifier.toString().toInt()
+        }.let {
+            Picture(IntBasedPictureIdentifier(it?.id ?: 0), it?.url ?: "", Quality.fromAcronym(it?.quality ?: ""))
+        }
+    }
 }
+
+inline class StringBasedAdIdentifier(val value: String) : AdIdentifier;
+inline class IntBasedPictureIdentifier(val value: Int) : PictureIdentifier
