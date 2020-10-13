@@ -91,7 +91,7 @@ internal class CalculateScoresTest {
     }
 
     @Test
-    fun `given an existing ad with a thirty words description of a Flat when the score is calculated then 20 is added to the score`() {
+    fun `given an existing ad with a thirty words description of a Flat when the score is calculated then 10 is added to the score`() {
         // given
         adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.FLAT, "This is a description with ten words eight nine ten ".repeat(3), listOf(IntBasedPictureIdentifier(1)), 300, null, null))
 
@@ -101,6 +101,19 @@ internal class CalculateScoresTest {
         // then
         assertThat(adRepository.findAll()).hasSize(1)
         assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(25)
+    }
+
+    @Test
+    fun `given an existing ad with a sixty words description of a Flat when the score is calculated then 30 is added to the score`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.FLAT, "This is a description with ten words eight nine ten ".repeat(6), listOf(IntBasedPictureIdentifier(1)), 300, null, null))
+
+        // when
+        calculateScores.execute(CalculateScoresParams())
+
+        // then
+        assertThat(adRepository.findAll()).hasSize(1)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(45)
     }
 }
 
