@@ -3,6 +3,7 @@ package com.idealista.acceptance.config
 import com.idealista.acceptance.config.stubs.InMemoryPersistence
 import com.idealista.domain.AdRepository
 import com.idealista.domain.PictureRepository
+import com.idealista.domain.rules.*
 import com.idealista.infrastructure.di.BeansInitializer
 import io.cucumber.spring.CucumberContextConfiguration
 import org.springframework.boot.test.context.SpringBootContextLoader
@@ -30,6 +31,10 @@ open class AcceptanceConfiguration {
 
         @Bean
         fun pictureRepository(): PictureRepository = inMemoryPersistence
+
+        @Bean
+        fun scoreRules(): List<ScoreRule> = listOf(NoPicturesScoreRule(), QualityPictureRule(inMemoryPersistence), DescriptionIsNotBlankRule(), DescriptionSizeRule(), KeyWordsDescriptionRule())
+
 
     }
 }
