@@ -9,7 +9,7 @@ class DescriptionSizeRule : ScoreRule {
         return descriptionScore.apply(ad)
     }
 
-    enum class TypologyDescriptionScore : ScoreRule {
+    private enum class TypologyDescriptionScore : ScoreRule {
 
         CHALET {
             override fun getLowerLimit(): Int = 50

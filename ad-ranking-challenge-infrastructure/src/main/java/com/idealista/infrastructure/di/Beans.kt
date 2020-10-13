@@ -18,4 +18,5 @@ fun beans() = beans {
     bean<QualityPictureRule>() { QualityPictureRule(ref<PictureRepository>("pictureRepository")) }
     bean<DescriptionSizeRule>() { DescriptionSizeRule() }
     bean<DescriptionIsNotBlankRule>() { DescriptionIsNotBlankRule() }
+    bean<AdIsCompleteRule>() { AdIsCompleteRule() }
 }

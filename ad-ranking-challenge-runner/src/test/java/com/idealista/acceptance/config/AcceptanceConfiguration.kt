@@ -33,7 +33,7 @@ open class AcceptanceConfiguration {
         fun pictureRepository(): PictureRepository = inMemoryPersistence
 
         @Bean
-        fun scoreRules(): List<ScoreRule> = listOf(NoPicturesScoreRule(), QualityPictureRule(inMemoryPersistence), DescriptionIsNotBlankRule(), DescriptionSizeRule(), KeyWordsDescriptionRule())
+        fun scoreRules(): List<ScoreRule> = listOf(NoPicturesScoreRule(), QualityPictureRule(inMemoryPersistence), DescriptionIsNotBlankRule(), DescriptionSizeRule(), KeyWordsDescriptionRule(), AdIsCompleteRule())
 
 
     }
