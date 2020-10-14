@@ -32,9 +32,9 @@ internal class ShowAdsITCase(@Autowired val testRestTemplate: TestRestTemplate) 
         assertThat(responseEntity.body)
                 .isNotNull()
                 .isEqualTo(listOf(
-                        mapOf("id" to 2, "typology" to Typology.FLAT.name, "description" to "Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo", "pictureUrls" to listOf("4"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 4, "typology" to Typology.FLAT.name, "description" to "Ático céntrico muy luminoso y recién reformado, parece nuevo", "pictureUrls" to listOf("5"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 5, "typology" to Typology.FLAT.name, "description" to "Pisazo,", "pictureUrls" to listOf("3", "8"), "houseSize" to 300, "gardenSize" to null)
+                        mapOf("id" to 2, "typology" to Typology.FLAT.name, "description" to "Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo", "pictureUrls" to listOf("http://www.idealista.com/pictures/4"), "houseSize" to 300, "gardenSize" to null),
+                        mapOf("id" to 4, "typology" to Typology.FLAT.name, "description" to "Ático céntrico muy luminoso y recién reformado, parece nuevo", "pictureUrls" to listOf("http://www.idealista.com/pictures/5"), "houseSize" to 300, "gardenSize" to null),
+                        mapOf("id" to 5, "typology" to Typology.FLAT.name, "description" to "Pisazo,", "pictureUrls" to listOf("http://www.idealista.com/pictures/3", "http://www.idealista.com/pictures/8"), "houseSize" to 300, "gardenSize" to null)
                 ))
     }
 

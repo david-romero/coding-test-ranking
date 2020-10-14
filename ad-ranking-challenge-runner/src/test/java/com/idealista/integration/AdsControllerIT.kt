@@ -1,9 +1,6 @@
 package com.idealista.integration
 
-import com.idealista.domain.Ad
-import com.idealista.domain.AdIdentifier
-import com.idealista.domain.PictureIdentifier
-import com.idealista.domain.Typology
+import com.idealista.domain.*
 import com.idealista.domain.rules.Ads
 import com.idealista.infrastructure.api.AdsController
 import com.idealista.usecases.ad.params.ShowAdsParams
@@ -44,8 +41,8 @@ internal class AdsControllerIT {
     fun `given a show ads request when the HTTP GET Request is received then a 200 ok is received`() {
         // given
         given(showAds.execute(ShowAdsParams())).willReturn(Either.Right(Ads(listOf(
-                Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(IntBasedPictureIdentifier(1)), 300),
-                Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(IntBasedPictureIdentifier(3)), 500, 100)
+                Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300),
+                Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100)
         ))))
 
         // when
@@ -61,8 +58,8 @@ internal class AdsControllerIT {
     fun `given a show ads request when the HTTP GET Request is received then the ads are received`() {
         // given
         given(showAds.execute(ShowAdsParams())).willReturn(Either.Right(Ads(listOf(
-                Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(IntBasedPictureIdentifier(1)), 300),
-                Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(IntBasedPictureIdentifier(3)), 500, 100)
+                Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300),
+                Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100)
         ))))
 
         // when
@@ -79,14 +76,14 @@ internal class AdsControllerIT {
                 .jsonPath("$[0].description").isEqualTo("Piso muy bonito")
                 .jsonPath("$[0].pictureUrls").isArray
                 .jsonPath("$[0].pictureUrls.length()").isEqualTo(1)
-                .jsonPath("$[0].pictureUrls[0]").isEqualTo("1")
+                .jsonPath("$[0].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/1.jpg")
                 .jsonPath("$[0].houseSize").isEqualTo(300)
                 .jsonPath("$[1].id").isEqualTo(2)
                 .jsonPath("$[1].typology").isEqualTo("CHALET")
                 .jsonPath("$[1].description").isEqualTo("Chalet muy bonito")
                 .jsonPath("$[1].pictureUrls").isArray
                 .jsonPath("$[1].pictureUrls.length()").isEqualTo(1)
-                .jsonPath("$[1].pictureUrls[0]").isEqualTo("3")
+                .jsonPath("$[1].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/3.jpg")
                 .jsonPath("$[1].houseSize").isEqualTo(500)
                 .jsonPath("$[1].gardenSize").isEqualTo(100)
     }

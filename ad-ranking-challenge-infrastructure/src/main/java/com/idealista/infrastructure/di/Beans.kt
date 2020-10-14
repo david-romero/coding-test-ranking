@@ -19,7 +19,7 @@ fun beans() = beans {
     }
     bean { KeyWordsDescriptionRule() }
     bean { NoPicturesScoreRule() }
-    bean { QualityPictureRule(ref()) }
+    bean { QualityPictureRule() }
     bean { DescriptionSizeRule() }
     bean { DescriptionIsNotBlankRule() }
     bean { AdIsCompleteRule() }

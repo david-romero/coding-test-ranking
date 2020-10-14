@@ -20,7 +20,7 @@ class AdIsCompleteRule : ScoreRule {
             override fun getPredicate(): Ad.() -> Boolean {
                 return {
                     description.isPresent() &&
-                            pictures.isNotEmpty() &&
+                            hasPictures() &&
                             houseSize > 0 &&
                             gardenSize ?: 0 > 0
                 }
@@ -30,7 +30,7 @@ class AdIsCompleteRule : ScoreRule {
             override fun getPredicate(): Ad.() -> Boolean {
                 return {
                     description.isPresent() &&
-                            pictures.isNotEmpty() &&
+                            hasPictures() &&
                             houseSize > 0
                 }
             }

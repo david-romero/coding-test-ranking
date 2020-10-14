@@ -48,5 +48,5 @@ class AdsController(
             ResponseEntity.badRequest().body(it.getErrors().joinToString(","))
 
     private fun mapToDto(ad: Ad) =
-            PublicAd(ad.id.toString().toInt(), ad.typology.name, ad.description.content, ad.pictures.map { it.toString() }, ad.houseSize, ad.gardenSize)
+            PublicAd(ad.id.toString().toInt(), ad.typology.name, ad.description.content, ad.pictures.map { it.url }, ad.houseSize, ad.gardenSize)
 }

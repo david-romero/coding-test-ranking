@@ -53,10 +53,20 @@ class InMemoryPersistence : AdRepository, PictureRepository {
             Picture(IntBasedPictureIdentifier(it?.id ?: 0), it?.url ?: "", Quality.fromAcronym(it?.quality ?: ""))
 
     private fun mapToVO(ad: Ad) =
-            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description.content, ad.pictures.map { it.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score.points, ad.irrelevantSince)
+            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description.content, ad.pictures.map { it.identifier.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score.points, ad.irrelevantSince)
 
     private fun mapToDomain(adVO: AdVO) =
-            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), Description(adVO.description), adVO.pictures.map { id -> IntBasedPictureIdentifier(id) }.toList(), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince, adVO.score?.let { Score(it) } ?: Score.empty())
+            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), Description(adVO.description), getPictures(adVO), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince, adVO.score?.let { Score(it) }
+                    ?: Score.empty())
+
+    private fun getPictures(adVO: AdVO): List<Picture> {
+        return adVO.pictures.map {
+            mapToDomain(it, pictures[it - 1])
+        }
+    }
+
+    private fun mapToDomain(id: Int, pictureVO: PictureVO) =
+            Picture(IntBasedPictureIdentifier(id), pictureVO.url, Quality.fromAcronym(pictureVO.quality ?: ""))
 }
 
 inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier {
