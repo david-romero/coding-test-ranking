@@ -9,7 +9,11 @@ import com.idealista.usecases.shared.Validation
 
 class ShowAds(private val adRepository: AdRepository) : UseCase<ShowAdsParams, Ads> {
     override fun execute(params: ShowAdsParams): Either<Validation, Ads> {
-        return Ads(adRepository.findAll().sortedByDescending { it.score }).let {
+        return Ads(adRepository.findAll()
+                .filter {
+                    it.score >= 40
+                }
+                .sortedByDescending { it.score }).let {
             Either.Right(it)
         }
     }

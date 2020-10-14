@@ -23,8 +23,8 @@ internal class ShowAdsTest {
     @Test
     fun `given two existing ads into the repository when the ads are shown then the existing ads are returned`() {
         // given
-        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300))
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 60))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 60))
 
 
         // when
@@ -37,16 +37,40 @@ internal class ShowAdsTest {
                 .isTrue()
         assertThat(response.get())
                 .isEqualTo(Ads(listOf(
-                        Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300),
-                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300)
+                        Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 60),
+                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 60)
                 )))
     }
 
     @Test
     fun `given three existing ads with different score when the ads are shown then ads are returned sorted by score descending`() {
         // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 40))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 60))
+        adRepository.save(Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 45))
+
+
+        // when
+        val response = showAds.execute(ShowAdsParams())
+
+        // then
+        assertThat(response)
+                .isNotNull()
+                .prop(Either<Either.Left<Validation>, Either.Right<String>>::isRight)
+                .isTrue()
+        assertThat(response.get())
+                .isEqualTo(Ads(listOf(
+                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 60),
+                        Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 45),
+                        Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 40)
+                )))
+    }
+
+    @Test
+    fun `given three existing ads two of them are irrelevant when the ads are shown then only one ad is returned`() {
+        // given
         adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 10))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 30))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 40))
         adRepository.save(Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 15))
 
 
@@ -60,9 +84,7 @@ internal class ShowAdsTest {
                 .isTrue()
         assertThat(response.get())
                 .isEqualTo(Ads(listOf(
-                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 30),
-                        Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 15),
-                        Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 10)
+                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 40)
                 )))
     }
 }
