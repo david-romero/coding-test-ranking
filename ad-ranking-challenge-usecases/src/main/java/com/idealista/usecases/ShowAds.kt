@@ -2,7 +2,7 @@ package com.idealista.usecases
 
 import com.idealista.domain.Ad
 import com.idealista.domain.AdRepository
-import com.idealista.domain.rules.Ads
+import com.idealista.domain.Ads
 import com.idealista.usecases.ad.params.ShowAdsParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase

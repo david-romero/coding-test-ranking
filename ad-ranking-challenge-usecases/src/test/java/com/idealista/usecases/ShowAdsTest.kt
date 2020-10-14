@@ -5,11 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
-import com.idealista.domain.Ad
-import com.idealista.domain.Description
-import com.idealista.domain.Score
-import com.idealista.domain.Typology
-import com.idealista.domain.rules.Ads
+import com.idealista.domain.*
 import com.idealista.usecases.ad.params.ShowAdsParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.Validation

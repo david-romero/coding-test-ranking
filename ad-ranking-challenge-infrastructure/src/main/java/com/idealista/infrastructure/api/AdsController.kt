@@ -1,7 +1,7 @@
 package com.idealista.infrastructure.api
 
 import com.idealista.domain.Ad
-import com.idealista.domain.rules.Ads
+import com.idealista.domain.Ads
 import com.idealista.usecases.ad.params.ShowAdsParams
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.UseCase

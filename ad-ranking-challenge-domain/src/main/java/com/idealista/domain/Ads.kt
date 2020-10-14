@@ -1,6 +1,3 @@
-package com.idealista.domain.rules
+package com.idealista.domain
 
-import com.idealista.domain.Ad
-
-data class Ads(val publicAds: List<Ad>) {
-}
+data class Ads(val publicAds: List<Ad>)
