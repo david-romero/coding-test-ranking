@@ -19,7 +19,26 @@ data class Ad(val id: AdIdentifier, val typology: Typology, val description: Des
 
     fun hasDescription() = description.isPresent()
 
-    fun hasPictures() = pictures.isNotEmpty()
+    private fun hasPictures() = pictures.isNotEmpty()
 
     fun hasNoPictures() = pictures.isEmpty()
+
+    fun isComplete() = run {
+        when (typology) {
+            Typology.FLAT -> {
+                description.isPresent() &&
+                        hasPictures() &&
+                        houseSize > 0
+            }
+            Typology.CHALET -> {
+                description.isPresent() &&
+                        hasPictures() &&
+                        houseSize > 0 &&
+                        gardenSize ?: 0 > 0
+            }
+            Typology.GARAGE -> {
+                hasPictures()
+            }
+        }
+    }
 }
