@@ -58,10 +58,11 @@ class InMemoryPersistence : AdRepository, PictureRepository {
     }
 
     private fun mapToDomain(adVO: AdVO) =
-            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), adVO.description, adVO.pictures.map { id -> IntBasedPictureIdentifier(id) }.toList(), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince, adVO.score ?: Int.MIN_VALUE)
+            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), adVO.description, adVO.pictures.map { id -> IntBasedPictureIdentifier(id) }.toList(), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince, adVO.score?.let { Score(it) }
+                    ?: Score.empty())
 
     private fun mapToVO(ad: Ad) =
-            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description, ad.pictures.map { pictureIdentifier -> pictureIdentifier.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score, ad.irrelevantSince)
+            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description, ad.pictures.map { pictureIdentifier -> pictureIdentifier.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score.points, ad.irrelevantSince)
 }
 
 inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier {

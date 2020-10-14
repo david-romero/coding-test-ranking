@@ -7,6 +7,7 @@ import assertk.assertions.prop
 import com.idealista.acceptance.config.AcceptanceConfiguration
 import com.idealista.acceptance.config.stubs.InMemoryPersistence
 import com.idealista.domain.Ad
+import com.idealista.domain.Score
 import com.idealista.infrastructure.persistence.AdVO
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.UseCase
@@ -38,7 +39,7 @@ class CalculateScoresStep(
     fun theFollowingScoresAreCalculated(data: DataTable) {
         data.asLists().drop(1)
                 .forEach {
-                    assertThat(getAd(it[0])).isNotNull().prop(Ad::score).isNotNull().isEqualTo(it[1].toInt())
+                    assertThat(getAd(it[0])).isNotNull().prop(Ad::score).prop(Score::points).isNotNull().isEqualTo(it[1].toInt())
                 }
     }
 

@@ -54,7 +54,7 @@ class ShowAdsStep(
                 .isEqualTo(adsSortedByScore())
     }
 
-    private fun adsSortedByScore() = Ads(world.ads?.get()?.publicAds?.sortedByDescending { it.score } ?: listOf())
+    private fun adsSortedByScore() = Ads(world.ads?.get()?.publicAds?.sortedByDescending { it.score.points } ?: listOf())
 
     private fun getAd(rawAd: String): Ad? = adRepository.findAll().firstOrNull { ad -> ad.id.toString() == rawAd[0].toString() }
 }

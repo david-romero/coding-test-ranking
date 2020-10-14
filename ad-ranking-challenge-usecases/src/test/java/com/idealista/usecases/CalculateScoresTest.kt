@@ -6,6 +6,7 @@ import assertk.assertions.index
 import assertk.assertions.isEqualTo
 import com.idealista.domain.Ad
 import com.idealista.domain.AdIdentifier
+import com.idealista.domain.Score
 import com.idealista.domain.Typology
 import com.idealista.domain.rules.*
 import com.idealista.usecases.score.params.CalculateScoresParams
@@ -32,7 +33,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(-10)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(-10)
     }
 
     @Test
@@ -45,7 +46,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(20)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(20)
     }
 
     @Test
@@ -58,7 +59,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(10)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(10)
     }
 
     @Test
@@ -71,7 +72,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(15)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(15)
     }
 
     @Test
@@ -84,7 +85,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(35)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(35)
     }
 
     @Test
@@ -97,7 +98,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(25)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(25)
     }
 
     @Test
@@ -110,7 +111,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(45)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(45)
     }
 
     @Test
@@ -123,7 +124,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(40)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(40)
     }
 
     @Test
@@ -136,7 +137,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(80)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(80)
     }
 
     @Test
@@ -149,7 +150,7 @@ internal class CalculateScoresTest {
 
         // then
         assertThat(adRepository.findAll()).hasSize(1)
-        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).isEqualTo(80)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(80)
     }
 }
 
