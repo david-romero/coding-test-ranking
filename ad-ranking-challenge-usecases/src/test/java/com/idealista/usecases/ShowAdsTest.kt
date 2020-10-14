@@ -41,4 +41,28 @@ internal class ShowAdsTest {
                         Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300)
                 )))
     }
+
+    @Test
+    fun `given three existing ads with different score when the ads are shown then ads are returned sorted by score descending`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 10))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 30))
+        adRepository.save(Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 15))
+
+
+        // when
+        val response = showAds.execute(ShowAdsParams())
+
+        // then
+        assertThat(response)
+                .isNotNull()
+                .prop(Either<Either.Left<Validation>, Either.Right<String>>::isRight)
+                .isTrue()
+        assertThat(response.get())
+                .isEqualTo(Ads(listOf(
+                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, "", emptyList(), 300, null, null, 30),
+                        Ad(StringBasedAdIdentifier("3"), Typology.FLAT, "", emptyList(), 300, null, null, 15),
+                        Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300, null, null, 10)
+                )))
+    }
 }
