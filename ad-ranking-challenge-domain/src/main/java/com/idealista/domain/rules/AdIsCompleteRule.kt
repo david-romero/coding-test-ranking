@@ -19,7 +19,7 @@ class AdIsCompleteRule : ScoreRule {
         CHALET {
             override fun getPredicate(): Ad.() -> Boolean {
                 return {
-                    !description.isBlank() &&
+                    description.isPresent() &&
                             pictures.isNotEmpty() &&
                             houseSize > 0 &&
                             gardenSize ?: 0 > 0
@@ -29,7 +29,7 @@ class AdIsCompleteRule : ScoreRule {
         FLAT {
             override fun getPredicate(): Ad.() -> Boolean {
                 return {
-                    !description.isBlank() &&
+                    description.isPresent() &&
                             pictures.isNotEmpty() &&
                             houseSize > 0
                 }

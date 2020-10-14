@@ -1,49 +1,32 @@
 package com.idealista.domain.rules
 
 import com.idealista.domain.Ad
+import com.idealista.domain.DescriptionSize
 import com.idealista.domain.Typology
 
 class DescriptionSizeRule : ScoreRule {
-    override fun apply(ad: Ad): Int {
-        val descriptionScore = TypologyDescriptionScore.valueOf(ad.typology)
-        return descriptionScore.apply(ad)
-    }
+
+    override fun apply(ad: Ad): Int = TypologyDescriptionScore.valueOf(ad.typology).apply(ad)
 
     private enum class TypologyDescriptionScore : ScoreRule {
 
         CHALET {
-            override fun getLowerLimit(): Int = 50
-            override fun getUpperLimit(): Int = Int.MAX_VALUE
-
-            override fun getScore(): Int = 20
-
-        },
-        FLAT {
-            override fun getLowerLimit(): Int = 20
-            override fun getUpperLimit(): Int = 49
-
-            override fun getScore(): Int = 10
-
             override fun apply(ad: Ad): Int {
-                return when {
-                    getWords(ad.description) >= 50 -> 30
-                    else -> super.apply(ad)
+                return when (DescriptionSize.valueOf(ad)) {
+                    DescriptionSize.BIG -> 20
+                    else -> 0
                 }
             }
-
+        },
+        FLAT {
+            override fun apply(ad: Ad): Int {
+                return when (DescriptionSize.valueOf(ad)) {
+                    DescriptionSize.SMALL -> 10
+                    DescriptionSize.BIG -> 30
+                    else -> 0
+                }
+            }
         };
-
-        override fun apply(ad: Ad): Int = if (isInRange(getWords(ad.description))) getScore() else 0
-
-        abstract fun getLowerLimit(): Int
-
-        abstract fun getUpperLimit(): Int
-
-        abstract fun getScore(): Int
-
-        private fun isInRange(words: Int) = IntRange(getLowerLimit(), getUpperLimit()).contains(words)
-
-        fun getWords(text: String) = text.split(" ").size
 
         companion object {
             fun valueOf(typology: Typology) = when (typology) {
@@ -51,6 +34,5 @@ class DescriptionSizeRule : ScoreRule {
                 else -> CHALET
             }
         }
-
     }
 }

@@ -1,9 +1,11 @@
 package com.idealista.infrastructure.api
 
+import com.idealista.domain.Ad
 import com.idealista.domain.rules.Ads
 import com.idealista.usecases.ad.params.ShowAdsParams
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.UseCase
+import com.idealista.usecases.shared.Validation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -23,10 +25,10 @@ class AdsController(
     @GetMapping("/api/1/ad")
     fun publicListing(): ResponseEntity<Any> {
         return showAds.execute(ShowAdsParams()).fold({
-            ResponseEntity.badRequest().body(it.getErrors().joinToString(","))
+            badRequest(it)
         }, { ads ->
             ads.publicAds.map { ad ->
-                PublicAd(ad.id.toString().toInt(), ad.typology.name, ad.description, ad.pictures.map { it.toString() }, ad.houseSize, ad.gardenSize)
+                mapToDto(ad)
             }.let {
                 ResponseEntity.ok(it)
             }
@@ -36,9 +38,15 @@ class AdsController(
     @PutMapping("/api/1/ad/score/calculate")
     fun calculateScore(): ResponseEntity<Any> {
         return calculateScores.execute(CalculateScoresParams()).fold({
-            ResponseEntity.badRequest().body(it.getErrors().joinToString(","))
+            badRequest(it)
         }, {
             ResponseEntity.noContent().build()
         })
     }
+
+    private fun badRequest(it: Validation): ResponseEntity<Any> =
+            ResponseEntity.badRequest().body(it.getErrors().joinToString(","))
+
+    private fun mapToDto(ad: Ad) =
+            PublicAd(ad.id.toString().toInt(), ad.typology.name, ad.description.content, ad.pictures.map { it.toString() }, ad.houseSize, ad.gardenSize)
 }

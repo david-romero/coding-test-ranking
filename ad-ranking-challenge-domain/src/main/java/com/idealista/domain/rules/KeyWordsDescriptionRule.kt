@@ -4,17 +4,5 @@ import com.idealista.domain.Ad
 
 class KeyWordsDescriptionRule : ScoreRule {
 
-    private val keyWords = listOf("luminoso", "nuevo", "céntrico", "reformado", "ático")
-
-    override fun apply(ad: Ad): Int {
-        return getOccurrences(ad.description) * 5
-    }
-
-    private fun getOccurrences(description: String): Int {
-        return keyWords.filter {
-            description.toLowerCase().contains(it)
-        }.count()
-    }
-
-
+    override fun apply(ad: Ad): Int = ad.description.keyWordsOccurrences * 5
 }
