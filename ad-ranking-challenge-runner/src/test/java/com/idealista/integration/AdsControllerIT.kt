@@ -23,7 +23,7 @@ internal class AdsControllerIT {
     private val showAds: UseCase<ShowAdsParams, Ads> = mock()
 
     private val client = WebTestClient
-            .bindToController(AdsController(calculateScores))
+            .bindToController(AdsController(calculateScores, showAds))
             .build()
 
     @Test
@@ -72,20 +72,20 @@ internal class AdsControllerIT {
 
         // then
         response.expectBody()
-                .jsonPath("$[]").isArray
-                .jsonPath("$[].size").isEqualTo(2)
+                .jsonPath("$").isArray
+                .jsonPath("$.length()").isEqualTo(2)
                 .jsonPath("$[0].id").isEqualTo(1)
                 .jsonPath("$[0].typology").isEqualTo("FLAT")
                 .jsonPath("$[0].description").isEqualTo("Piso muy bonito")
                 .jsonPath("$[0].pictureUrls").isArray
-                .jsonPath("$[0].pictureUrls[].size").isEqualTo(1)
+                .jsonPath("$[0].pictureUrls.length()").isEqualTo(1)
                 .jsonPath("$[0].pictureUrls[0]").isEqualTo("1")
                 .jsonPath("$[0].houseSize").isEqualTo(300)
                 .jsonPath("$[1].id").isEqualTo(2)
                 .jsonPath("$[1].typology").isEqualTo("CHALET")
                 .jsonPath("$[1].description").isEqualTo("Chalet muy bonito")
                 .jsonPath("$[1].pictureUrls").isArray
-                .jsonPath("$[1].pictureUrls[].size").isEqualTo(1)
+                .jsonPath("$[1].pictureUrls.length()").isEqualTo(1)
                 .jsonPath("$[1].pictureUrls[0]").isEqualTo("3")
                 .jsonPath("$[1].houseSize").isEqualTo(500)
                 .jsonPath("$[1].gardenSize").isEqualTo(100)
