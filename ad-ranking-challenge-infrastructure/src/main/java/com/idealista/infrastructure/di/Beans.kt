@@ -1,6 +1,5 @@
 package com.idealista.infrastructure.di
 
-import com.idealista.domain.AdRepository
 import com.idealista.domain.PictureRepository
 import com.idealista.domain.rules.*
 import com.idealista.usecases.CalculateScores
@@ -11,12 +10,12 @@ import org.springframework.context.support.beans
 
 fun beans() = beans {
     bean<UseCase<CalculateScoresParams, Any>>() {
-        CalculateScores(ref<AdRepository>(), ref<List<ScoreRule>>())
+        CalculateScores(ref(), provider<ScoreRule>().toList())
     }
-    bean<KeyWordsDescriptionRule>() { KeyWordsDescriptionRule() }
-    bean<NoPicturesScoreRule>() { NoPicturesScoreRule() }
-    bean<QualityPictureRule>() { QualityPictureRule(ref<PictureRepository>("pictureRepository")) }
-    bean<DescriptionSizeRule>() { DescriptionSizeRule() }
-    bean<DescriptionIsNotBlankRule>() { DescriptionIsNotBlankRule() }
-    bean<AdIsCompleteRule>() { AdIsCompleteRule() }
+    bean { KeyWordsDescriptionRule() }
+    bean { NoPicturesScoreRule() }
+    bean { QualityPictureRule(ref()) }
+    bean { DescriptionSizeRule() }
+    bean { DescriptionIsNotBlankRule() }
+    bean { AdIsCompleteRule() }
 }

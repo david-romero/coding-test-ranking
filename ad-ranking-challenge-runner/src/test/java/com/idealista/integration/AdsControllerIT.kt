@@ -5,7 +5,6 @@ import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -22,7 +21,7 @@ internal class AdsControllerIT {
     @Test
     fun `given a calculate score request when the HTTP PUT Request is received then a 204 no content is received`() {
         // given
-        given(calculateScores.execute(CalculateScoresParams())).willReturn(Either.Right(Any()))
+        given(calculateScores.execute(CalculateScoresParams())).willReturn(Either.Right(""))
         val path = "/api/1/ad/score/calculate"
 
         // when

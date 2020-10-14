@@ -17,7 +17,7 @@ import io.cucumber.java.en.When
 
 class CalculateScoresStep(
         private val adRepository: InMemoryPersistence,
-        private val calculateScores: UseCase<CalculateScoresParams, Nothing>) : AcceptanceConfiguration() {
+        private val calculateScores: UseCase<CalculateScoresParams, Any>) : AcceptanceConfiguration() {
 
     @Given("the following adds")
     fun theFollowingAdds(data: DataTable) {
@@ -25,7 +25,7 @@ class CalculateScoresStep(
                 .map {
                     AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, null)
                 }.forEach {
-                    adRepository.database.put(it.id.toString(), it)
+                    adRepository.database[it.id.toString()] = it
                 }
     }
 

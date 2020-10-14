@@ -7,7 +7,7 @@ import java.util.*
 @Repository
 class InMemoryPersistence : AdRepository, PictureRepository {
     final val ads: MutableList<AdVO>
-    final val pictures: MutableList<PictureVO>
+    private final val pictures: MutableList<PictureVO>
 
     init {
         ads = ArrayList()
@@ -39,7 +39,12 @@ class InMemoryPersistence : AdRepository, PictureRepository {
     }
 
     override fun saveAll(ads: List<Ad>): List<Ad> {
-        TODO("Not yet implemented")
+        ads.map {
+            AdVO(it.id.toString().toInt(), it.typology.name, it.description, it.pictures.map { it.toString().toInt() }, it.houseSize, it.gardenSize, it.score, it.irrelevantSince)
+        }.forEach {
+            this.ads[(it.id ?: 0) - 1] = it
+        }
+        return ads
     }
 
     override fun findByIdentifier(identifier: PictureIdentifier): Picture? {
@@ -51,5 +56,13 @@ class InMemoryPersistence : AdRepository, PictureRepository {
     }
 }
 
-inline class StringBasedAdIdentifier(val value: String) : AdIdentifier;
-inline class IntBasedPictureIdentifier(val value: Int) : PictureIdentifier
+inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier {
+    override fun toString(): String {
+        return "$value"
+    }
+}
+inline class IntBasedPictureIdentifier(private val value: Int) : PictureIdentifier {
+    override fun toString(): String {
+        return "$value"
+    }
+}
