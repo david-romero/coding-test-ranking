@@ -34,12 +34,7 @@ internal class ShowAdsITCase(@Autowired val testRestTemplate: TestRestTemplate) 
                 .isEqualTo(listOf(
                         mapOf("id" to 2, "typology" to Typology.FLAT.name, "description" to "Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo", "pictureUrls" to listOf("4"), "houseSize" to 300, "gardenSize" to null),
                         mapOf("id" to 4, "typology" to Typology.FLAT.name, "description" to "Ático céntrico muy luminoso y recién reformado, parece nuevo", "pictureUrls" to listOf("5"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 5, "typology" to Typology.FLAT.name, "description" to "Pisazo,", "pictureUrls" to listOf("3", "8"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 8, "typology" to Typology.CHALET.name, "description" to "Maravilloso chalet situado en lAs afueras de un pequeño pueblo rural. El entorno es espectacular, las vistas magníficas. ¡Cómprelo ahora!", "pictureUrls" to listOf("1", "7"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 3, "typology" to Typology.CHALET.name, "description" to "", "pictureUrls" to listOf("2"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 6, "typology" to Typology.GARAGE.name, "description" to "", "pictureUrls" to listOf("6"), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 1, "typology" to Typology.CHALET.name, "description" to "Este piso es una ganga, compra, compra, COMPRA!!!!!", "pictureUrls" to listOf<String>(), "houseSize" to 300, "gardenSize" to null),
-                        mapOf("id" to 7, "typology" to Typology.GARAGE.name, "description" to "Garaje en el centro de Albacete", "pictureUrls" to listOf<String>(), "houseSize" to 300, "gardenSize" to null)
+                        mapOf("id" to 5, "typology" to Typology.FLAT.name, "description" to "Pisazo,", "pictureUrls" to listOf("3", "8"), "houseSize" to 300, "gardenSize" to null)
                 ))
     }
 
