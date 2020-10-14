@@ -27,5 +27,8 @@ open class AcceptanceConfiguration {
         @Bean
         @Primary
         fun pictureRepository(): PictureRepository = inMemoryPersistence
+
+        @Bean
+        fun world() = World()
     }
 }
