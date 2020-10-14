@@ -1,6 +1,5 @@
 package com.idealista.infrastructure.di
 
-import com.idealista.domain.PictureRepository
 import com.idealista.domain.rules.*
 import com.idealista.usecases.CalculateScores
 import com.idealista.usecases.score.params.CalculateScoresParams

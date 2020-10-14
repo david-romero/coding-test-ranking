@@ -15,16 +15,16 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(loader = SpringBootContextLoader::class, initializers = [BeansInitializer::class])
 open class EndToEndConfiguration {
 
-    private val DEFAULT_OPTIONS = arrayOf<HttpClientOption>()
+    private val defaultOptions = arrayOf<HttpClientOption>()
 
-    private val SSL_OPTIONS = arrayOf(HttpClientOption.SSL)
+    private val sslOptions = arrayOf(HttpClientOption.SSL)
 
     @Bean
     fun testRestTemplate(applicationContext: ApplicationContext): TestRestTemplate {
         val builder = getRestTemplateBuilder(applicationContext)
         val sslEnabled = isSslEnabled(applicationContext)
         val template = TestRestTemplate(builder, null, null,
-                *if (sslEnabled) SSL_OPTIONS else DEFAULT_OPTIONS)
+                *if (sslEnabled) sslOptions else defaultOptions)
         val handler = LocalHostUriTemplateHandler(
                 applicationContext.environment, if (sslEnabled) "https" else "http")
         template.setUriTemplateHandler(handler)
@@ -33,10 +33,8 @@ open class EndToEndConfiguration {
 
     private fun isSslEnabled(context: ApplicationContext): Boolean {
         return try {
-            val webServerFactory = context
-                    .getBean(AbstractServletWebServerFactory::class.java)
-            (webServerFactory.ssl != null
-                    && webServerFactory.ssl.isEnabled)
+            val webServerFactory = context.getBean(AbstractServletWebServerFactory::class.java)
+            (webServerFactory.ssl != null && webServerFactory.ssl.isEnabled)
         } catch (ex: NoSuchBeanDefinitionException) {
             false
         }

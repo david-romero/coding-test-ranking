@@ -28,21 +28,19 @@ class InMemoryPersistence : AdRepository, PictureRepository {
         pictures.add(PictureVO(6, "http://www.idealista.com/pictures/6", "SD"))
         pictures.add(PictureVO(7, "http://www.idealista.com/pictures/7", "SD"))
         pictures.add(PictureVO(8, "http://www.idealista.com/pictures/8", "HD"))
-    } //TODO crea los métodos que necesites
+    }
 
     override fun findAll(): List<Ad> {
         return ads.map {
-            Ad(StringBasedAdIdentifier(it.id.toString()), Typology.valueOf(it.typology ?: ""), it.description
-                    ?: "", it.pictures?.map { id -> IntBasedPictureIdentifier(id) }?.toList() ?: listOf(), it.houseSize
-                    ?: 0, it.gardenSize, it.irrelevantSince)
+            mapToDomain(it)
         }.toList()
     }
 
     override fun saveAll(ads: List<Ad>): List<Ad> {
         ads.map {
-            AdVO(it.id.toString().toInt(), it.typology.name, it.description, it.pictures.map { it.toString().toInt() }, it.houseSize, it.gardenSize, it.score, it.irrelevantSince)
+            mapToVO(it)
         }.forEach {
-            this.ads[(it.id ?: 0) - 1] = it
+            save(it)
         }
         return ads
     }
@@ -54,13 +52,24 @@ class InMemoryPersistence : AdRepository, PictureRepository {
             Picture(IntBasedPictureIdentifier(it?.id ?: 0), it?.url ?: "", Quality.fromAcronym(it?.quality ?: ""))
         }
     }
+
+    private fun save(it: AdVO) {
+        this.ads[(it.id) - 1] = it
+    }
+
+    private fun mapToDomain(adVO: AdVO) =
+            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), adVO.description, adVO.pictures.map { id -> IntBasedPictureIdentifier(id) }.toList(), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince)
+
+    private fun mapToVO(ad: Ad) =
+            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description, ad.pictures.map { pictureIdentifier -> pictureIdentifier.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score, ad.irrelevantSince)
 }
 
 inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier {
     override fun toString(): String {
-        return "$value"
+        return value
     }
 }
+
 inline class IntBasedPictureIdentifier(private val value: Int) : PictureIdentifier {
     override fun toString(): String {
         return "$value"

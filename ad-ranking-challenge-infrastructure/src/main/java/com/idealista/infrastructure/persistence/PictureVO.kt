@@ -1,14 +1,5 @@
 package com.idealista.infrastructure.persistence
 
-class PictureVO {
-    var id: Int? = null
-    var url: String? = null
-    var quality: String? = null
+class PictureVO(val id: Int, val url: String, var quality: String?) {
 
-    constructor() {}
-    constructor(id: Int?, url: String?, quality: String?) {
-        this.id = id
-        this.url = url
-        this.quality = quality
-    }
 }

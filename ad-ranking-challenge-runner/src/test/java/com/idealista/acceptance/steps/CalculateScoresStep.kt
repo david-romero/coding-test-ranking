@@ -42,7 +42,7 @@ class CalculateScoresStep(
                 }
     }
 
-    private fun getDescription(notMappedAdd: MutableList<String?>) = notMappedAdd[2]
+    private fun getDescription(notMappedAdd: MutableList<String?>) = notMappedAdd[2] ?: ""
 
     private fun getPictures(notMappedAdd: MutableList<String?>): List<Int> {
         return if (notMappedAdd[3] != null) {

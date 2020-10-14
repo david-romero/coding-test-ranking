@@ -7,9 +7,9 @@ import com.idealista.domain.rules.AdIsCompleteRule.TypologyCompleteAdScore.Compa
 class AdIsCompleteRule : ScoreRule {
     override fun apply(ad: Ad): Int {
         if (adIsComplete(ad)) {
-            return ad.score + 40
+            return 40
         }
-        return ad.score
+        return 0
     }
 
     private fun adIsComplete(ad: Ad) = valueOf(ad.typology).getPredicate().invoke(ad)

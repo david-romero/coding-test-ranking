@@ -26,14 +26,14 @@ class DescriptionSizeRule : ScoreRule {
 
             override fun apply(ad: Ad): Int {
                 return when {
-                    getWords(ad.description) >= 50 -> ad.score + 30
+                    getWords(ad.description) >= 50 -> 30
                     else -> super.apply(ad)
                 }
             }
 
         };
 
-        override fun apply(ad: Ad): Int = if (isInRange(getWords(ad.description))) ad.score + getScore() else ad.score
+        override fun apply(ad: Ad): Int = if (isInRange(getWords(ad.description))) getScore() else 0
 
         abstract fun getLowerLimit(): Int
 

@@ -7,7 +7,7 @@ import java.util.*
 
 class InMemoryPersistence : AdRepository, PictureRepository {
     val database: MutableMap<String, AdVO>
-    final val pictures: MutableList<PictureVO>
+    private val pictures: MutableList<PictureVO>
 
     init {
         database = HashMap()
@@ -20,21 +20,19 @@ class InMemoryPersistence : AdRepository, PictureRepository {
         pictures.add(PictureVO(6, "http://www.idealista.com/pictures/6", "SD"))
         pictures.add(PictureVO(7, "http://www.idealista.com/pictures/7", "SD"))
         pictures.add(PictureVO(8, "http://www.idealista.com/pictures/8", "HD"))
-    } //TODO crea los métodos que necesites
+    }
 
     override fun findAll(): List<Ad> {
         return database.values.map {
-            Ad(StringBasedAdIdentifier(it.id.toString()), Typology.valueOf(it.typology ?: ""), it.description
-                    ?: "", it.pictures?.map { id -> IntBasedPictureIdentifier(id) }?.toList() ?: listOf(), it.houseSize
-                    ?: 0, it.gardenSize, it.irrelevantSince , it.score ?: 0)
+            mapToDomain(it)
         }.toList()
     }
 
     override fun saveAll(ads: List<Ad>): List<Ad> {
         ads.map {
-            AdVO(it.id.toString().toInt(), it.typology.name, it.description, it.pictures.map { it.toString().toInt() }, it.houseSize, it.gardenSize, it.score, it.irrelevantSince)
+            mapToVO(it)
         }.forEach {
-            database[it.id.toString()] = it
+            save(it)
         }
         return ads
     }
@@ -43,16 +41,31 @@ class InMemoryPersistence : AdRepository, PictureRepository {
         return pictures.find {
             it.id == identifier.toString().toInt()
         }.let {
-            Picture(IntBasedPictureIdentifier(it?.id ?: 0), it?.url ?: "", Quality.fromAcronym(it?.quality ?: ""))
+            mapToDomain(it)
         }
+    }
+
+    private fun save(adVO: AdVO) {
+        database[adVO.id.toString()] = adVO
+    }
+
+    private fun mapToDomain(it: PictureVO?) =
+            Picture(IntBasedPictureIdentifier(it?.id ?: 0), it?.url ?: "", Quality.fromAcronym(it?.quality ?: ""))
+
+    private fun mapToVO(ad: Ad) =
+            AdVO(ad.id.toString().toInt(), ad.typology.name, ad.description, ad.pictures.map { it.toString().toInt() }, ad.houseSize, ad.gardenSize, ad.score, ad.irrelevantSince)
+
+    private fun mapToDomain(adVO: AdVO) =
+            Ad(StringBasedAdIdentifier(adVO.id.toString()), Typology.valueOf(adVO.typology), adVO.description, adVO.pictures.map { id -> IntBasedPictureIdentifier(id) }.toList(), adVO.houseSize, adVO.gardenSize, adVO.irrelevantSince, adVO.score
+                    ?: 0)
+}
+
+inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier {
+    override fun toString(): String {
+        return value
     }
 }
 
-inline class StringBasedAdIdentifier(private val value: String) : AdIdentifier{
-    override fun toString(): String {
-        return "$value"
-    }
-}
 inline class IntBasedPictureIdentifier(private val value: Int) : PictureIdentifier {
     override fun toString(): String {
         return "$value"

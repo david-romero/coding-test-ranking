@@ -6,13 +6,12 @@ import com.idealista.domain.Quality
 
 class QualityPictureRule(private val pictureRepository: PictureRepository) : ScoreRule {
     override fun apply(ad: Ad): Int {
-        val newScore = ad.pictures.map {
+        return ad.pictures.map {
             if (pictureRepository.findByIdentifier(it)?.quality == Quality.HIGH_DEFINITION) {
                 20
             } else {
                 10
             }
         }.sum()
-        return ad.score + newScore
     }
 }

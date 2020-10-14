@@ -22,11 +22,10 @@ internal class AdsControllerIT {
     fun `given a calculate score request when the HTTP PUT Request is received then a 204 no content is received`() {
         // given
         given(calculateScores.execute(CalculateScoresParams())).willReturn(Either.Right(""))
-        val path = "/api/1/ad/score/calculate"
 
         // when
         val response = client.put()
-                .uri(path)
+                .uri("/api/1/ad/score/calculate")
                 .exchange()
 
         // then

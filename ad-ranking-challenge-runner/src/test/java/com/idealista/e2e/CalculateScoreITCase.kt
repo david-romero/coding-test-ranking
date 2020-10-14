@@ -3,8 +3,10 @@ package com.idealista.e2e
 import assertk.assertThat
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotNull
+import assertk.assertions.prop
 import com.idealista.Main
 import com.idealista.e2e.config.EndToEndConfiguration
+import com.idealista.infrastructure.persistence.AdVO
 import com.idealista.infrastructure.persistence.InMemoryPersistence
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,10 +29,11 @@ internal class CalculateScoreITCase(@Autowired val testRestTemplate: TestRestTem
 
         // then
         repository.ads.forEach() {
-            assertThat(it).isNotNull()
-            assertThat(it.score)
+            assertThat(it)
                     .isNotNull()
-                    .isGreaterThan(-10)
+                    .prop(AdVO::score)
+                    .isNotNull()
+                    .isGreaterThan(Int.MIN_VALUE)
         }
     }
 
