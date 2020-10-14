@@ -15,7 +15,7 @@ fun beans() = beans {
         CalculateScores(ref(), provider<ScoreRule>().toList())
     }
     bean<UseCase<ShowAdsParams, Ads>> {
-        ShowAds()
+        ShowAds(ref())
     }
     bean { KeyWordsDescriptionRule() }
     bean { NoPicturesScoreRule() }
