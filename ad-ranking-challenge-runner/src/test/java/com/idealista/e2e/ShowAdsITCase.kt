@@ -19,7 +19,7 @@ internal class ShowAdsITCase(@Autowired val testRestTemplate: TestRestTemplate) 
 
 
     @Test
-    fun `Given an ad list when the score is calculated then al score values are not null and greater than zero`() {
+    fun `Given an ad list with the score calculated when the ads are shown then all relevant ads are returned`() {
         // given
         val request = null
         testRestTemplate.put("/api/1/ad/score/calculate", request)
