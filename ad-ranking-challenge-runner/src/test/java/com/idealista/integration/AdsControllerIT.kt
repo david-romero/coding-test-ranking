@@ -3,6 +3,7 @@ package com.idealista.integration
 import com.idealista.domain.*
 import com.idealista.infrastructure.api.AdsController
 import com.idealista.usecases.ad.params.ShowAdsParams
+import com.idealista.usecases.ad.params.ShowIrrelevantAdsParams
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.springframework.test.web.reactive.server.WebTestClient
+import java.time.Instant
+import java.time.OffsetDateTime
 
 
 internal class AdsControllerIT {
@@ -17,6 +20,8 @@ internal class AdsControllerIT {
     private val calculateScores: UseCase<CalculateScoresParams, Any> = mock()
 
     private val showAds: UseCase<ShowAdsParams, Ads> = mock()
+
+    private val showIrrelevantAds: UseCase<ShowIrrelevantAdsParams, IrrelevantAds> = mock()
 
     private val client = WebTestClient
             .bindToController(AdsController(calculateScores, showAds))
@@ -85,6 +90,59 @@ internal class AdsControllerIT {
                 .jsonPath("$[1].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/3.jpg")
                 .jsonPath("$[1].houseSize").isEqualTo(500)
                 .jsonPath("$[1].gardenSize").isEqualTo(100)
+    }
+
+    @Test
+    fun `given a show irrelevant ads request when the HTTP GET Request is received then a 200 ok is received`() {
+        // given
+        given(showIrrelevantAds.execute(ShowIrrelevantAdsParams())).willReturn(Either.Right(IrrelevantAds(listOf(
+                IrrelevantAd(Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300), OffsetDateTime.parse("2020-10-14T19:42:00Z")),
+                IrrelevantAd(Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100), OffsetDateTime.parse("2020-10-14T19:42:00Z"))
+        ))))
+
+        // when
+        val response = client.get()
+                .uri("/api/1/ad/irrelevant")
+                .exchange()
+
+        // then
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `given a show irrelevant ads request when the HTTP GET Request is received then the irrelevant ads are received`() {
+        // given
+        given(showIrrelevantAds.execute(ShowIrrelevantAdsParams())).willReturn(Either.Right(IrrelevantAds(listOf(
+                IrrelevantAd(Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300), OffsetDateTime.parse("2020-10-14T19:42:00Z")),
+                IrrelevantAd(Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100), OffsetDateTime.parse("2020-10-14T19:42:00Z"))
+        ))))
+
+        // when
+        val response = client.get()
+                .uri("/api/1/ad/irrelevant")
+                .exchange()
+
+        // then
+        response.expectBody()
+                .jsonPath("$").isArray
+                .jsonPath("$.length()").isEqualTo(2)
+                .jsonPath("$[0].id").isEqualTo(1)
+                .jsonPath("$[0].typology").isEqualTo("FLAT")
+                .jsonPath("$[0].description").isEqualTo("Piso muy bonito")
+                .jsonPath("$[0].pictureUrls").isArray
+                .jsonPath("$[0].pictureUrls.length()").isEqualTo(1)
+                .jsonPath("$[0].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/1.jpg")
+                .jsonPath("$[0].houseSize").isEqualTo(300)
+                .jsonPath("$[0].irrelevantSince").isEqualTo("2020-10-14T19:42:00Z")
+                .jsonPath("$[1].id").isEqualTo(2)
+                .jsonPath("$[1].typology").isEqualTo("CHALET")
+                .jsonPath("$[1].description").isEqualTo("Chalet muy bonito")
+                .jsonPath("$[1].pictureUrls").isArray
+                .jsonPath("$[1].pictureUrls.length()").isEqualTo(1)
+                .jsonPath("$[1].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/3.jpg")
+                .jsonPath("$[1].houseSize").isEqualTo(500)
+                .jsonPath("$[1].gardenSize").isEqualTo(100)
+                .jsonPath("$[1].irrelevantSince").isEqualTo("2020-10-14T19:42:00Z")
     }
 
     private inline fun <reified T : Any> mock(): T = Mockito.mock(T::class.java)
