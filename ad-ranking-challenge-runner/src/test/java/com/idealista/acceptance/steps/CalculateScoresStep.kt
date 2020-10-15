@@ -25,7 +25,7 @@ class CalculateScoresStep(
     fun theFollowingAdds(data: DataTable) {
         data.asLists().drop(1)
                 .map {
-                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, if (it.size == 6 && it[5] != null) OffsetDateTime.parse(it[5]).toInstant().toEpochMilli() else null)
+                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, getIrrelevantDate(it))
                 }.forEach {
                     adRepository.database[it.id.toString()] = it
                 }
@@ -43,6 +43,9 @@ class CalculateScoresStep(
                     assertThat(getAd(it[0])).isNotNull().prop(Ad::score).prop(Score::points).isNotNull().isEqualTo(it[1].toInt())
                 }
     }
+
+    private fun getIrrelevantDate(it: MutableList<String>) =
+            if (it.size == 6 && it[5] != null) OffsetDateTime.parse(it[5]).toInstant().toEpochMilli() else null
 
     private fun getDescription(notMappedAdd: MutableList<String?>) = notMappedAdd[2] ?: ""
 

@@ -20,6 +20,7 @@ class ShowIrrelevantAds(private val adRepository: AdRepository) : UseCase<ShowIr
                 .let { Either.Right(it) }
     }
 
-    private fun asIrrelevantAd(it: Ad) =
-            IrrelevantAd(it, it.irrelevantSince?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now())
+    private fun asIrrelevantAd(it: Ad) = IrrelevantAd(it, getIrrelevantDate(it))
+
+    private fun getIrrelevantDate(it: Ad) = it.irrelevantSince?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now()
 }
