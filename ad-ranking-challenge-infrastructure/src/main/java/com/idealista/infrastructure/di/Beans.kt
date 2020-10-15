@@ -21,7 +21,7 @@ fun beans() = beans {
         ShowAds(ref())
     }
     bean<UseCase<ShowIrrelevantAdsParams, IrrelevantAds>> {
-        ShowIrrelevantAds()
+        ShowIrrelevantAds(ref())
     }
     bean { KeyWordsDescriptionRule() }
     bean { NoPicturesScoreRule() }

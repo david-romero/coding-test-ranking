@@ -15,10 +15,11 @@ class ShowIrrelevantAds(private val adRepository: AdRepository) : UseCase<ShowIr
     override fun execute(params: ShowIrrelevantAdsParams): Either<Validation, IrrelevantAds> {
         return IrrelevantAds(adRepository.findAll()
                 .filter(Ad::isIrrelevant)
-                .map(this::asIrrelevantAd))
+                .map(this::asIrrelevantAd)
+                .sortedByDescending { it.since })
                 .let { Either.Right(it) }
     }
 
     private fun asIrrelevantAd(it: Ad) =
-            IrrelevantAd(it, it.irrelevantSince?.toInstant()?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now())
+            IrrelevantAd(it, it.irrelevantSince?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now())
 }

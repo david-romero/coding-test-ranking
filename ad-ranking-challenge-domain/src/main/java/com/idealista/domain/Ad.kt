@@ -1,11 +1,11 @@
 package com.idealista.domain
 
 import com.idealista.domain.rules.ScoreRule
-import java.util.*
+import java.time.Instant
 
 interface AdIdentifier
 
-data class Ad(val id: AdIdentifier, val typology: Typology, val description: Description, val pictures: List<Picture>, val houseSize: Int, val gardenSize: Int?, val irrelevantSince: Date?, val score: Score = Score.empty()) {
+data class Ad(val id: AdIdentifier, val typology: Typology, val description: Description, val pictures: List<Picture>, val houseSize: Int, val gardenSize: Int?, val irrelevantSince: Instant?, val score: Score = Score.empty()) {
     constructor(id: AdIdentifier, typology: Typology, description: String, pictures: List<Picture>, houseSize: Int) : this(id, typology, Description(description), pictures, houseSize, null, null)
 
     constructor(id: AdIdentifier, typology: Typology, description: String, pictures: List<Picture>, houseSize: Int, gardenSize: Int) : this(id, typology, Description(description), pictures, houseSize, gardenSize, null)

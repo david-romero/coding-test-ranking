@@ -60,7 +60,7 @@ class ShowIrrelevantAds(private val showIrrelevantAds: UseCase<ShowIrrelevantAds
         return adRepository.findAll()
                 .first { ad -> ad.id.toString() == rawAd[0].toString() }
                 .let {
-                    IrrelevantAd(it, it.irrelevantSince?.toInstant()?.atOffset(ZoneOffset.of("02:00")) ?: OffsetDateTime.now())
+                    IrrelevantAd(it, it.irrelevantSince?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now())
                 }
     }
 

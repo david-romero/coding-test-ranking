@@ -12,7 +12,6 @@ import com.idealista.usecases.shared.Validation
 import com.idealista.usecases.stubs.AdRepositoryStub
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
-import java.util.*
 
 internal class ShowIrrelevantAdsTest {
 
@@ -24,7 +23,7 @@ internal class ShowIrrelevantAdsTest {
     fun `given two ads once of them is irrelevant when irrelevant ads are shown then the unique irrelevant ad is returned`() {
         // given
         adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, null, Score(60)))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, Date.from(OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant()), Score(30)))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant(), Score(30)))
 
         // when
         val response = showIrrelevantAds.execute(ShowIrrelevantAdsParams())
@@ -36,7 +35,28 @@ internal class ShowIrrelevantAdsTest {
                 .isTrue()
         assertThat(response.get())
                 .isEqualTo(IrrelevantAds(listOf(
-                        IrrelevantAd(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, Date.from(OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant()), Score(30)), OffsetDateTime.parse("2020-10-14T19:42:00+02:00"))
+                        IrrelevantAd(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant(), Score(30)), OffsetDateTime.parse("2020-10-14T19:42:00+02:00"))
+                )))
+    }
+
+    @Test
+    fun `given two irrelevant ads when irrelevant ads are shown then they are sorted by irrelevant date`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant(), Score(20)))
+        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:43:00+02:00").toInstant(), Score(30)))
+
+        // when
+        val response = showIrrelevantAds.execute(ShowIrrelevantAdsParams())
+
+        // then
+        assertThat(response)
+                .isNotNull()
+                .prop(Either<Either.Left<Validation>, Either.Right<IrrelevantAds>>::isRight)
+                .isTrue()
+        assertThat(response.get())
+                .isEqualTo(IrrelevantAds(listOf(
+                        IrrelevantAd(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:43:00+02:00").toInstant(), Score(30)), OffsetDateTime.parse("2020-10-14T19:43:00+02:00")),
+                        IrrelevantAd(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, OffsetDateTime.parse("2020-10-14T19:42:00+02:00").toInstant(), Score(20)), OffsetDateTime.parse("2020-10-14T19:42:00+02:00"))
                 )))
     }
 }

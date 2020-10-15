@@ -15,6 +15,7 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import java.time.OffsetDateTime
 
 class CalculateScoresStep(
         private val adRepository: InMemoryPersistence,
@@ -24,7 +25,7 @@ class CalculateScoresStep(
     fun theFollowingAdds(data: DataTable) {
         data.asLists().drop(1)
                 .map {
-                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, null)
+                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, if (it.size == 6 && it[5] != null) OffsetDateTime.parse(it[5]).toInstant().toEpochMilli() else null)
                 }.forEach {
                     adRepository.database[it.id.toString()] = it
                 }
