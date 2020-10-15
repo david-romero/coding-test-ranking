@@ -1,19 +1,24 @@
 package com.idealista.usecases
 
+import com.idealista.domain.Ad
+import com.idealista.domain.AdRepository
+import com.idealista.domain.IrrelevantAd
 import com.idealista.domain.IrrelevantAds
 import com.idealista.usecases.ad.params.ShowIrrelevantAdsParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase
 import com.idealista.usecases.shared.Validation
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
-class ShowIrrelevantAds : UseCase<ShowIrrelevantAdsParams, IrrelevantAds> {
+class ShowIrrelevantAds(private val adRepository: AdRepository) : UseCase<ShowIrrelevantAdsParams, IrrelevantAds> {
     override fun execute(params: ShowIrrelevantAdsParams): Either<Validation, IrrelevantAds> {
-        return Either.Left(NotImplemented("Not Implemented yet"))
+        return IrrelevantAds(adRepository.findAll()
+                .filter(Ad::isIrrelevant)
+                .map(this::asIrrelevantAd))
+                .let { Either.Right(it) }
     }
-}
 
-inline class NotImplemented(private val error: String) : Validation {
-    override fun hasErrors(): Boolean = true
-
-    override fun getErrors(): List<String> = listOf(error)
+    private fun asIrrelevantAd(it: Ad) =
+            IrrelevantAd(it, it.irrelevantSince?.toInstant()?.atOffset(ZoneOffset.of("+02:00")) ?: OffsetDateTime.now())
 }

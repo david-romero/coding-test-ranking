@@ -31,7 +31,7 @@ internal class ShowAdsTest {
         // then
         assertThat(response)
                 .isNotNull()
-                .prop(Either<Either.Left<Validation>, Either.Right<String>>::isRight)
+                .prop(Either<Either.Left<Validation>, Either.Right<Ads>>::isRight)
                 .isTrue()
         assertThat(response.get())
                 .isEqualTo(Ads(listOf(

@@ -17,6 +17,8 @@ data class Ad(val id: AdIdentifier, val typology: Typology, val description: Des
 
     fun isRelevant() = score.hasReachedTheLimit()
 
+    fun isIrrelevant() = !isRelevant()
+
     fun hasDescription() = description.isPresent()
 
     private fun hasPictures() = pictures.isNotEmpty()
