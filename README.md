@@ -30,7 +30,7 @@ En dicho *esqueleto* hemos dejado para que completes un [Controller](https://doc
 Podrás ejecutar el proyecto usando Maven ejecutando el siguiente comando en la carpeta donde esté el fichero `pom.xml`:
 
 ```bash
-$ mvn spring-boot:run
+$ mvn spring-boot:run -pl ad-ranking-challenge-runner
 ```
 
 **La persistencia de datos no forma parte del objetivo del reto**. Si no vas a usar el esqueleto que te proporcionamos, te sugerimos que la simplifiques tanto como puedas (con una base de datos embebida, "persistiendo" los objetos en memoria, usando un fichero...). **El diseño de una interfaz gráfica tampoco** forma parte del alcance del reto, por tanto no es necesario que la implementes.
