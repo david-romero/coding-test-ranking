@@ -6,13 +6,14 @@ import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase
 import com.idealista.usecases.shared.Validation
+import java.time.Clock
 
 class CalculateScores(private val adRepository: AdRepository,
                       private val scoreRules: List<ScoreRule>) : UseCase<CalculateScoresParams, Any> {
     override fun execute(params: CalculateScoresParams): Either<Validation, Any> {
         adRepository.findAll()
                 .map { ad ->
-                    ad.applyRules(scoreRules)
+                    ad.applyScoreRules(scoreRules)
                 }
                 .run {
                     adRepository.saveAll(this)

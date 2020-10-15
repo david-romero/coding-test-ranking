@@ -17,7 +17,6 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import java.time.Instant
-import java.time.OffsetDateTime
 
 class CalculateScoresStep(
         private val adRepository: InMemoryPersistence,
@@ -27,7 +26,7 @@ class CalculateScoresStep(
     fun theFollowingAdds(data: DataTable) {
         data.asLists().drop(1)
                 .map {
-                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, getIrrelevantDate(it))
+                    AdVO(it[0].toInt(), it[1].toString(), getDescription(it), getPictures(it), it[4].toInt(), null, null, null)
                 }.forEach {
                     adRepository.database[it.id.toString()] = it
                 }
@@ -44,8 +43,8 @@ class CalculateScoresStep(
                 .forEach {
                     assertThat(getAd(it[0])).isNotNull().prop(Ad::score).prop(Score::points).isNotNull().isEqualTo(it[1].toInt())
                 }
-    }    
-    
+    }
+
     @Then("the following ads has the irrelevant date")
     fun theFollowingAdsHasTheIrrelevantDate(data: DataTable) {
         data.asLists().drop(1)
@@ -53,9 +52,6 @@ class CalculateScoresStep(
                     assertThat(getAd(it[0])).isNotNull().prop(Ad::irrelevantSince).isNotNull().matchesPredicate { date -> Instant.MIN.isBefore(date) }
                 }
     }
-
-    private fun getIrrelevantDate(it: MutableList<String>) =
-            if (it.size == 6 && it[5] != null) OffsetDateTime.parse(it[5]).toInstant().toEpochMilli() else null
 
     private fun getDescription(notMappedAdd: MutableList<String?>) = notMappedAdd[2] ?: ""
 

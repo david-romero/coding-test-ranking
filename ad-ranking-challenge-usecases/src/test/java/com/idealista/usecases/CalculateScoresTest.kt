@@ -1,9 +1,7 @@
 package com.idealista.usecases
 
 import assertk.assertThat
-import assertk.assertions.hasSize
-import assertk.assertions.index
-import assertk.assertions.isEqualTo
+import assertk.assertions.*
 import com.idealista.domain.*
 import com.idealista.domain.rules.*
 import com.idealista.usecases.score.params.CalculateScoresParams
@@ -11,6 +9,7 @@ import com.idealista.usecases.stubs.AdRepositoryStub
 import com.idealista.usecases.stubs.IntBasedPictureIdentifier
 import com.idealista.usecases.stubs.PictureRepositoryStub
 import org.junit.jupiter.api.Test
+import java.time.Instant
 
 internal class CalculateScoresTest {
 
@@ -148,6 +147,19 @@ internal class CalculateScoresTest {
         // then
         assertThat(adRepository.findAll()).hasSize(1)
         assertThat(adRepository.findAll()).index(0).transform(transform = Ad::score).transform(transform = Score::points).isEqualTo(80)
+    }
+
+    @Test
+    fun `given an with low quality when the score is calculated then the irrelevant date has to be set`() {
+        // given
+        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, "", emptyList(), 300))
+
+        // when
+        calculateScores.execute(CalculateScoresParams())
+
+        // then
+        assertThat(adRepository.findAll()).hasSize(1)
+        assertThat(adRepository.findAll()).index(0).transform(transform = Ad::irrelevantSince).isNotNull().matchesPredicate { Instant.MIN.isBefore(it) }
     }
 }
 

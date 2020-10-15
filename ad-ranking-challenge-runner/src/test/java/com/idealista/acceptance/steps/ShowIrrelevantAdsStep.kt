@@ -1,10 +1,7 @@
 package com.idealista.acceptance.steps
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
-import assertk.assertions.isTrue
-import assertk.assertions.prop
+import assertk.assertions.*
 import com.idealista.acceptance.config.World
 import com.idealista.domain.AdRepository
 import com.idealista.domain.IrrelevantAd
@@ -19,9 +16,9 @@ import io.cucumber.java.en.When
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-class ShowIrrelevantAds(private val showIrrelevantAds: UseCase<ShowIrrelevantAdsParams, IrrelevantAds>,
-                        private val world: World,
-                        private val adRepository: AdRepository) {
+class ShowIrrelevantAdsStep(private val showIrrelevantAds: UseCase<ShowIrrelevantAdsParams, IrrelevantAds>,
+                            private val world: World,
+                            private val adRepository: AdRepository) {
 
 
     @When("irrelevant ads are shown")
@@ -40,7 +37,14 @@ class ShowIrrelevantAds(private val showIrrelevantAds: UseCase<ShowIrrelevantAds
                     getAd(it[0])
                 }
                 .run {
-                    assertThat(this).isEqualTo(world.irrelevantAds?.get()?.ads)
+                    forEach {
+                        val actualIrrelevantAd = world.irrelevantAds?.let { either ->
+                            either.get().ads.firstOrNull { irrelevantAd ->
+                                irrelevantAd.ad.id == it.ad.id
+                            }
+                        }
+                        assertThat(actualIrrelevantAd).isNotNull().isEqualToIgnoringGivenProperties(it, IrrelevantAd::since)
+                    }
                 }
     }
 
@@ -53,6 +57,20 @@ class ShowIrrelevantAds(private val showIrrelevantAds: UseCase<ShowIrrelevantAds
         assertThat(world.irrelevantAds?.get())
                 .isEqualTo(adsSortedByScore())
     }
+
+    @Then("the attribute irrelevantDate is not null for each ad")
+    fun `the attribute irrelevantDate is not null for each ad`() {
+        assertThat(world.irrelevantAds)
+                .isNotNull()
+                .prop(Either<Either.Left<Validation>, Either.Right<String>>::isRight)
+                .isTrue()
+        world.irrelevantAds?.let {
+            it.get().ads.forEach { irrelevantAd ->
+                assertThat(irrelevantAd).prop(IrrelevantAd::since).isNotNull().matchesPredicate { date -> OffsetDateTime.MIN.isBefore(date) }
+            }
+        }
+    }
+
 
     private fun adsSortedByScore() = IrrelevantAds(world.irrelevantAds?.get()?.ads?.sortedByDescending { it.since } ?: listOf())
 

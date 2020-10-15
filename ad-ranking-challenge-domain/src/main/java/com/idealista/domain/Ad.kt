@@ -10,9 +10,12 @@ data class Ad(val id: AdIdentifier, val typology: Typology, val description: Des
 
     constructor(id: AdIdentifier, typology: Typology, description: String, pictures: List<Picture>, houseSize: Int, gardenSize: Int) : this(id, typology, Description(description), pictures, houseSize, gardenSize, null)
 
-    fun applyRules(scoreRules: List<ScoreRule>): Ad {
-        val newScore = scoreRules.reduce { acc, scoreRule -> ScoreRule.SumScoreRules(acc, scoreRule) }.apply(this)
-        return copy(score = Score(newScore))
+    fun applyScoreRules(scoreRules: List<ScoreRule>): Ad {
+        val adWithNewScore = copy(score = Score(scoreRules.reduce { acc, scoreRule -> ScoreRule.SumScoreRules(acc, scoreRule) }.apply(this)))
+        if (adWithNewScore.isIrrelevant()) {
+            return adWithNewScore.copy(irrelevantSince = Instant.now())
+        }
+        return adWithNewScore
     }
 
     fun isRelevant() = score.hasReachedTheLimit()
