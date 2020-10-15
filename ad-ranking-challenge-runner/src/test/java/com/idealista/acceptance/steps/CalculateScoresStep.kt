@@ -3,6 +3,7 @@ package com.idealista.acceptance.steps
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import assertk.assertions.matchesPredicate
 import assertk.assertions.prop
 import com.idealista.acceptance.config.AcceptanceConfiguration
 import com.idealista.acceptance.config.stubs.InMemoryPersistence
@@ -15,6 +16,7 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import java.time.Instant
 import java.time.OffsetDateTime
 
 class CalculateScoresStep(
@@ -41,6 +43,14 @@ class CalculateScoresStep(
         data.asLists().drop(1)
                 .forEach {
                     assertThat(getAd(it[0])).isNotNull().prop(Ad::score).prop(Score::points).isNotNull().isEqualTo(it[1].toInt())
+                }
+    }    
+    
+    @Then("the following ads has the irrelevant date")
+    fun theFollowingAdsHasTheIrrelevantDate(data: DataTable) {
+        data.asLists().drop(1)
+                .forEach {
+                    assertThat(getAd(it[0])).isNotNull().prop(Ad::irrelevantSince).isNotNull().matchesPredicate { date -> Instant.MIN.isBefore(date) }
                 }
     }
 
