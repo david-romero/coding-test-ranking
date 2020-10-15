@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.time.Instant
 import java.time.OffsetDateTime
 
 
@@ -24,7 +23,7 @@ internal class AdsControllerIT {
     private val showIrrelevantAds: UseCase<ShowIrrelevantAdsParams, IrrelevantAds> = mock()
 
     private val client = WebTestClient
-            .bindToController(AdsController(calculateScores, showAds))
+            .bindToController(AdsController(calculateScores, showAds, showIrrelevantAds))
             .build()
 
     @Test
@@ -113,8 +112,8 @@ internal class AdsControllerIT {
     fun `given a show irrelevant ads request when the HTTP GET Request is received then the irrelevant ads are received`() {
         // given
         given(showIrrelevantAds.execute(ShowIrrelevantAdsParams())).willReturn(Either.Right(IrrelevantAds(listOf(
-                IrrelevantAd(Ad(IntBasedAdIdentifier(1), Typology.FLAT, "Piso muy bonito", listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300), OffsetDateTime.parse("2020-10-14T19:42:00Z")),
-                IrrelevantAd(Ad(IntBasedAdIdentifier(2), Typology.CHALET, "Chalet muy bonito", listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100), OffsetDateTime.parse("2020-10-14T19:42:00Z"))
+                IrrelevantAd(Ad(IntBasedAdIdentifier(1), Typology.FLAT, Description("Piso muy bonito"), listOf(Picture(IntBasedPictureIdentifier(1), "http://idealista.com/static/photos/1.jpg", Quality.HIGH_DEFINITION)), 300 , null, null, Score(30)), OffsetDateTime.parse("2020-10-14T19:42:00Z")),
+                IrrelevantAd(Ad(IntBasedAdIdentifier(2), Typology.CHALET, Description("Chalet muy bonito"), listOf(Picture(IntBasedPictureIdentifier(3), "http://idealista.com/static/photos/3.jpg", Quality.HIGH_DEFINITION)), 500, 100, null, Score(30)), OffsetDateTime.parse("2020-10-14T19:42:00Z"))
         ))))
 
         // when
@@ -133,6 +132,7 @@ internal class AdsControllerIT {
                 .jsonPath("$[0].pictureUrls.length()").isEqualTo(1)
                 .jsonPath("$[0].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/1.jpg")
                 .jsonPath("$[0].houseSize").isEqualTo(300)
+                .jsonPath("$[0].score").isEqualTo(30)
                 .jsonPath("$[0].irrelevantSince").isEqualTo("2020-10-14T19:42:00Z")
                 .jsonPath("$[1].id").isEqualTo(2)
                 .jsonPath("$[1].typology").isEqualTo("CHALET")
@@ -142,6 +142,7 @@ internal class AdsControllerIT {
                 .jsonPath("$[1].pictureUrls[0]").isEqualTo("http://idealista.com/static/photos/3.jpg")
                 .jsonPath("$[1].houseSize").isEqualTo(500)
                 .jsonPath("$[1].gardenSize").isEqualTo(100)
+                .jsonPath("$[1].score").isEqualTo(30)
                 .jsonPath("$[1].irrelevantSince").isEqualTo("2020-10-14T19:42:00Z")
     }
 
