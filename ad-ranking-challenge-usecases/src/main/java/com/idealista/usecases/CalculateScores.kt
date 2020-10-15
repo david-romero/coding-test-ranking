@@ -1,12 +1,11 @@
 package com.idealista.usecases
 
 import com.idealista.domain.AdRepository
-import com.idealista.domain.rules.ScoreRule
+import com.idealista.domain.scoring.ScoreRule
 import com.idealista.usecases.score.params.CalculateScoresParams
 import com.idealista.usecases.shared.Either
 import com.idealista.usecases.shared.UseCase
 import com.idealista.usecases.shared.Validation
-import java.time.Clock
 
 class CalculateScores(private val adRepository: AdRepository,
                       private val scoreRules: List<ScoreRule>) : UseCase<CalculateScoresParams, Any> {

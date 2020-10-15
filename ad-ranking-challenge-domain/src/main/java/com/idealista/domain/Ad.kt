@@ -1,6 +1,6 @@
 package com.idealista.domain
 
-import com.idealista.domain.rules.ScoreRule
+import com.idealista.domain.scoring.ScoreRule
 import java.time.Instant
 
 interface AdIdentifier

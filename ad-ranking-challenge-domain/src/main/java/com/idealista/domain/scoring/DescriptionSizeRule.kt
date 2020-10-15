@@ -1,4 +1,4 @@
-package com.idealista.domain.rules
+package com.idealista.domain.scoring
 
 import com.idealista.domain.Ad
 import com.idealista.domain.DescriptionSize

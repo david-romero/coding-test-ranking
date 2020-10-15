@@ -21,9 +21,19 @@ internal class ShowAdsTest {
     @Test
     fun `given two existing ads into the repository when the ads are shown then the existing ads are returned`() {
         // given
-        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, null, Score(60)))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(60)))
-
+        adRepository.saveAll(listOf(
+                ad {
+                    id { "1" }
+                    typology { Typology.CHALET }
+                    houseSize { 300 }
+                    score { 60 }
+                },
+                ad {
+                    id { "2" }
+                    typology { Typology.FLAT }
+                    houseSize { 300 }
+                    score { 60 }
+                }))
 
         // when
         val response = showAds.execute(ShowAdsParams())
@@ -43,10 +53,25 @@ internal class ShowAdsTest {
     @Test
     fun `given three existing ads with different score when the ads are shown then ads are returned sorted by score descending`() {
         // given
-        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, null, Score(40)))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(60)))
-        adRepository.save(Ad(StringBasedAdIdentifier("3"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(45)))
-
+        adRepository.saveAll(listOf(
+                ad {
+                    id { "1" }
+                    typology { Typology.CHALET }
+                    houseSize { 300 }
+                    score { 40 }
+                },
+                ad {
+                    id { "2" }
+                    typology { Typology.FLAT }
+                    houseSize { 300 }
+                    score { 60 }
+                },
+                ad {
+                    id { "3" }
+                    typology { Typology.FLAT }
+                    houseSize { 300 }
+                    score { 45 }
+                }))
 
         // when
         val response = showAds.execute(ShowAdsParams())
@@ -67,9 +92,22 @@ internal class ShowAdsTest {
     @Test
     fun `given three existing ads two of them are irrelevant when the ads are shown then only one ad is returned`() {
         // given
-        adRepository.save(Ad(StringBasedAdIdentifier("1"), Typology.CHALET, Description.empty(), emptyList(), 300, null, null, Score(10)))
-        adRepository.save(Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(40)))
-        adRepository.save(Ad(StringBasedAdIdentifier("3"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(15)))
+        adRepository.saveAll(listOf(
+                ad {
+                    id { "1" }
+                    typology { Typology.CHALET }
+                    score { 10 }
+                },
+                ad {
+                    id { "2" }
+                    typology { Typology.FLAT }
+                    score { 40 }
+                },
+                ad {
+                    id { "3" }
+                    typology { Typology.FLAT }
+                    score { 15 }
+                }))
 
 
         // when
@@ -82,7 +120,11 @@ internal class ShowAdsTest {
                 .isTrue()
         assertThat(response.get())
                 .isEqualTo(Ads(listOf(
-                        Ad(StringBasedAdIdentifier("2"), Typology.FLAT, Description.empty(), emptyList(), 300, null, null, Score(40))
+                        ad {
+                            id { "2" }
+                            typology { Typology.FLAT }
+                            score { 40 }
+                        }
                 )))
     }
 }
